@@ -8,8 +8,6 @@
  * When running `npm run build` or `npm run build:main`, this file is compiled to
  * `./src/main.js` using webpack. This gives us some performance wins.
  */
-import 'core-js/stable';
-import 'regenerator-runtime/runtime';
 import path from 'path';
 import { app, BrowserWindow, shell, ipcMain } from 'electron';
 import { autoUpdater } from 'electron-updater';
@@ -17,6 +15,7 @@ import log from 'electron-log';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
 
+// electronの自動更新をお知らせしてくれる、ログを残してくれる
 export default class AppUpdater {
   constructor() {
     log.transports.file.level = 'info';
@@ -41,10 +40,12 @@ if (process.env.NODE_ENV === 'production') {
 const isDevelopment =
   process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true';
 
+// デベロッパーツールの表示
 if (isDevelopment) {
   require('electron-debug')();
 }
 
+// デベロップのとき、追加のdevtoolsをインストールしてくれる？
 const installExtensions = async () => {
   const installer = require('electron-devtools-installer');
   const forceDownload = !!process.env.UPGRADE_EXTENSIONS;
@@ -81,6 +82,7 @@ const createWindow = async () => {
     },
   });
 
+  // localhost 1212で開いてくれる index.ejsのはずだが?
   mainWindow.loadURL(resolveHtmlPath('index.html'));
 
   mainWindow.on('ready-to-show', () => {
